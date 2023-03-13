@@ -1,0 +1,11 @@
+---
+- name: Create AZURE VMs
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Create resources on Azure
+      include_role:
+        name: 'azure'
+      vars:
+        ssh_key_path: id_rsa_aws.pub

@@ -1,0 +1,58 @@
+---
+subnet_name: jws-demo-subnet
+admin_username: ec2-user
+ssh_pass: false
+offer: RHEL
+publisher: RedHat
+sku: 8-LVM
+image_version: "latest"
+vm_size: "Standard_D2s_v3"
+publicIP: jws-demo-ip
+domain_name_label: "jws-demo"
+privatednszone: "internal.ansiblemiddleware.com"
+allow_virtual_network_access: true
+allow_forwarded_traffic: true
+profile_status: Enabled
+ttl: 60
+protocol: HTTPS
+port: 443
+path: '/'
+timeout_in_seconds: 10
+interval_in_seconds: 30
+tolerated_number_of_failures: 3
+record_type: "CNAME"
+resource_groups:
+  - name: jws-demo-uksouth-rg
+    location: uksouth
+    address_prefixes: "10.0.1.0/26"
+    subnet: "10.0.1.0/27"
+    az_gwsubnet: "10.0.1.32/27"
+    virtualnetwork_name: jws-demo-uksouth-vn
+security:
+  groups:
+    jws:
+        - name: 'ssh'
+          destination_port_range: '22'
+          priority: 101
+          protocol: Tcp
+          direction: Inbound
+        - name: https
+          destination_port_range: '443'
+          priority: 102
+          protocol: Tcp
+          direction: Inbound
+vm:
+  - name: 'jws-demo'
+    site: 'site1'
+    role: 'jws'
+    resourcegroup_name: jws-demo-uksouth-rg
+    resourcegroup_location: uksouth
+    domain_name: "{{ domain_name_label }}"
+
+resource_tags:
+  Environment: jws-demo
+  Application: jws-demo
+  Created-By: ansible
+  Cloud: AZURE
+
+destroy_networking: False
