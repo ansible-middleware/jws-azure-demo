@@ -36,15 +36,15 @@
     resource_group: "{{ resource_groups.0.name }}"
     name: "{{ privatednszone }}"
 
-- name: Update virtual network DNS link
-  azure.azcollection.azure_rm_privatednszonelink:
-    resource_group: "{{ resource_groups.0.name }}"
-    name: "ansiblefest_{{ item.state.location }}_dnslink"
-    zone_name: "{{ privatednszone }}"
-    virtual_network: "{{ item.state.id }}"
-    registration_enabled: yes
-    state: present
-  loop: "{{ created_vn.results }}"
+# - name: Update virtual network DNS link
+#   azure.azcollection.azure_rm_privatednszonelink:
+#     resource_group: "{{ resource_groups.0.name }}"
+#     name: "jws-demo_{{ item.state.location }}_dnslink"
+#     zone_name: "{{ privatednszone }}"
+#     virtual_network: "{{ item.state.id }}"
+#     registration_enabled: yes
+#     state: present
+#   loop: "{{ created_vn.results }}"
 
 - name: Create public IP address for VM's
   azure_rm_publicipaddress:
@@ -59,7 +59,7 @@
   azure_rm_networkinterface:
     name: "{{ item.name }}"
     resource_group: "{{ item.resourcegroup_name }}"
-    virtual_network: "ansiblefest-{{ item.resourcegroup_location }}-vn"
+    virtual_network: "jws-demo-{{ item.resourcegroup_location }}-vn"
     subnet_name: "{{subnet_name}}"
     security_group: "{{ item.role }}"
     public_ip_name: "{{ item.name }}-ip"
@@ -71,7 +71,7 @@
     resource_group: "{{ item.resourcegroup_name }}"
     name: "{{ item.name }}"
     admin_username: "{{ admin_username }}"
-    admin_password: "{{ admin_password }}"
+    #admin_password: "{{ admin_password }}"
     network_interface_names: "{{ item.name }}"
     ssh_password_enabled: "{{ ssh_pass }}"
     ssh_public_keys:
