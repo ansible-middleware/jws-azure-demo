@@ -1,0 +1,20 @@
+---
+- name: "Ensure required parameters are provided"
+  ansible.builtin.assert:
+    that:
+      - repo_server is defined
+    quiet: true
+
+- name: "Download zips from assets_server"
+  ansible.builtin.get_url:
+    url: "{{ asset }}"
+    dest: "{{ lookup('env', 'PWD') }}"
+    validate_certs: no
+  delegate_to: localhost
+  loop:
+    - "{{ repo_server }}5.6.2/jws-5.6.2-application-server.zip"
+    - "{{ repo_server }}5.7.0/jws-5.7.0-application-server.zip"
+    - "{{ repo_server }}5.6.0/jws-5.6.0-application-server.zip"
+  loop_control:
+    loop_var: asset
+  run_once: True
