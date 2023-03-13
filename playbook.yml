@@ -1,0 +1,60 @@
+---
+- name: "Red Hat JBoss Web Server installation and configuration"
+  hosts: all
+  vars:
+    jws_setup: True
+    jws_version: 5.6.0
+    jws_native: false
+    jws_java_version: 1.8.0
+    jws_systemd_enabled: True
+    jws_service_name: jws
+    jws_apps_to_remove: ROOT,examples
+    jws_selinux_enabled: False
+    jws_apply_patches: True
+    jws_patch_version: 5.6.2
+  collections:
+    - redhat.jws
+  pre_tasks:
+
+    - name: "Download zips from assets_server"
+      ansible.builtin.get_url:
+        url: "{{ asset }}"
+        dest: "{{ lookup('env', 'PWD') }}"
+        validate_certs: no
+      delegate_to: localhost
+      loop:
+        - "{{ repo_server }}5.6.2/jws-5.6.2-application-server.zip"
+        - "{{ repo_server }}5.7.0/jws-5.7.0-application-server.zip"
+        - "{{ repo_server }}5.6.0/jws-5.6.0-application-server.zip"
+      loop_control:
+        loop_var: asset
+      run_once: True
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: jws
+
+  post_tasks:
+    - name: "Ensure JWS is installed, configured and running."
+      ansible.builtin.include_role:
+        name: jws
+        tasks_from: apply_cp/main.yml
+
+    - name: "Deploy webapp"
+      ansible.builtin.get_url:
+        url: "https://drive.google.com/uc?export=download&id=1w9ss5okctnjUvRAxhPEPyC7DmbUwmbhb"
+        dest: "{{ jws_home }}/webapps/info.war"
+      notify: "Restart Tomcat service"
+
+#    - name: "Ensure Tomcat is restarted, if needed, before accessing the webapp"
+#      ansible.builtin.meta: flush_handlers
+#
+#    - name: "Ensure JWS is back up before accessing the webapp."
+#      ansible.builtin.wait_for:
+#        port: 8080
+#
+#    - name: "Check that webapp is available"
+#      ansible.builtin.get_url:
+#        url: "http://localhost:8080/info/"
+#        dest: /tmp/res.txt
+#      changed_when: false
