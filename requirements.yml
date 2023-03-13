@@ -1,0 +1,6 @@
+---
+collections:
+  - name: redhat.redhat_csp_download
+  - name: redhat.jws
+  - name: azure.azcollection      
+
