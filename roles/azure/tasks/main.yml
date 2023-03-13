@@ -88,6 +88,8 @@
   register: az_instances
   async: 7200
   poll: 0
+  vars:
+    ansible_async_dir: '/tmp/.ansible_async'  
 
 - name: Wait for instance creation to complete
   async_status:
@@ -95,7 +97,10 @@
   register: az_instance_jobs
   until: az_instance_jobs.finished
   retries: 300
-  loop: "{{ az_instances.results }}"  
+  loop: "{{ az_instances.results }}"
+  when: item.ansible_job_id is defined
+  vars:
+    ansible_async_dir: '/tmp/.ansible_async'
 
 - name: Create a DNS zone
   azure_rm_dnszone:
