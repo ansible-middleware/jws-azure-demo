@@ -27,7 +27,7 @@
         state: enabled
         immediate: yes
       ignore_errors: true
-      when: configure_firewalld
+      when: configure_firewalld is defined and configure_firewalld
 
   tasks:
     - name: "Ensure JWS {{ jws_version }} is installed."

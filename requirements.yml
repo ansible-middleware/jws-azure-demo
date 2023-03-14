@@ -2,5 +2,6 @@
 collections:
   - name: redhat.redhat_csp_download
   - name: redhat.jws
+  - name: ansible.posix
   - name: azure.azcollection     
     version: "==1.11.0"
