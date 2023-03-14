@@ -10,6 +10,7 @@
     jws_service_name: jws
     jws_apps_to_remove: ROOT,examples
     jws_selinux_enabled: False
+    jws_listen_http_bind_address: 0.0.0.0
   collections:
     - redhat.jws
   pre_tasks:
