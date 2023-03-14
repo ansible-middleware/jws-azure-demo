@@ -7,6 +7,6 @@
     - name: Create resources on Azure
       include_role:
         name: 'azure'
-      tasks_from: "{{ action | default('main') }}"
+        tasks_from: "{{ action | default('main') }}"
       vars:
         ssh_key_path: id_rsa_aws.pub
