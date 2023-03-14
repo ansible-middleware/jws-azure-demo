@@ -20,6 +20,15 @@
     - name: "Retrieve JWS assets from: {{ repo_server }}."
       ansible.builtin.include_tasks: download_assets.yml
 
+    - name: "Configure firewall for JWS ports"
+      ansible.posix.firewalld:
+        port: 8080/tcp
+        permanent: true
+        state: enabled
+        immediate: yes
+      ignore_errors: true
+      when: configure_firewalld
+
   tasks:
     - name: "Ensure JWS {{ jws_version }} is installed."
       ansible.builtin.include_role:
