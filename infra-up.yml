@@ -1,12 +1,13 @@
 ---
-- name: Create AZURE VMs
+- name: Create kubevirt VMs
   hosts: localhost
   gather_facts: false
   connection: local
   tasks:
-    - name: Create resources on Azure
+    - name: Create resource
       include_role:
-        name: 'azure'
+        name: 'kubevirt'
         tasks_from: "{{ action | default('main') }}"
       vars:
         ssh_key_path: id_rsa_aws.pub
+        vm_name: jws4

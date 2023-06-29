@@ -1,0 +1,32 @@
+---
+- name: Create VM
+  kubernetes.kubevirt.kubevirt_vm:
+    state: present
+    name: "{{ vm_name }}"
+    namespace: default
+    labels:
+      service: jws
+    instancetype: u1.medium
+    preference: fedora
+    interfaces:
+    - name: default
+      masquerade: {}
+    - name: bridge-network
+      bridge: {}
+    networks:
+    - name: default
+      pod: {}
+    - name: bridge-network
+      multus:
+        networkName: kindexgw
+    volumes:
+    - containerDisk:
+        image: quay.io/containerdisks/fedora:latest
+      name: containerdisk
+    - cloudInitNoCloud:
+        userData: |-
+          #cloud-config
+          ssh_authorized_keys:
+            - "{{ lookup('ansible.builtin.file', ssh_key_path) }}"
+      name: cloudinit
+    wait: yes
