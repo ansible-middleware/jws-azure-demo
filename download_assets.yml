@@ -18,3 +18,4 @@
   loop_control:
     loop_var: asset
   run_once: True
+  changed_when: False
